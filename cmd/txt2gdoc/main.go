@@ -11,7 +11,7 @@ func main() {
 		panic(err)
 	}
 
-	client, err := google.NewOAuthClient("credentials.json", "token.json")
+	client, err := google.NewOAuthClient("credentials.json", "token.json", false)
 	if err != nil {
 		panic(err)
 	}

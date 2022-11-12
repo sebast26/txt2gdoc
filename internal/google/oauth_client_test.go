@@ -17,7 +17,7 @@ import (
 func TestNewOAuthClient(t *testing.T) {
 	t.Run("credential file not found", func(t *testing.T) {
 		// when
-		client, err := google.NewOAuthClient("non_existing_path", "")
+		client, err := google.NewOAuthClient("non_existing_path", "", false)
 
 		// then
 		assert.ErrorContains(t, err, "reading client secret file failed")
@@ -26,7 +26,7 @@ func TestNewOAuthClient(t *testing.T) {
 
 	t.Run("invalid credentials", func(t *testing.T) {
 		// when
-		client, err := google.NewOAuthClient("testdata/credentials_invalid.json", "")
+		client, err := google.NewOAuthClient("testdata/credentials_invalid.json", "", false)
 
 		// then
 		assert.ErrorContains(t, err, "parsing client secret file to config failed")
@@ -35,11 +35,22 @@ func TestNewOAuthClient(t *testing.T) {
 
 	t.Run("credentials and token found", func(t *testing.T) {
 		// when
-		client, err := google.NewOAuthClient("testdata/credentials.json", "testdata/token.json")
+		client, err := google.NewOAuthClient("testdata/credentials.json", "testdata/token.json", false)
 
 		// then
 		assert.NoError(t, err)
 		assert.NotEmpty(t, client)
+	})
+
+	t.Run("token not found, no force web", func(t *testing.T) {
+		// given
+
+		// when
+		client, err := google.NewOAuthClient("testdata/credentials.json", "not_existing_token", false)
+
+		// then
+		assert.ErrorContains(t, err, "count not get token")
+		assert.Empty(t, client)
 	})
 
 	t.Run("get token from web, auth server error", func(t *testing.T) {
@@ -63,7 +74,7 @@ func TestNewOAuthClient(t *testing.T) {
 		// when
 		_, _ = fmt.Fprintf(w, "a")
 		_ = w.Close()
-		_, err = google.NewOAuthClient("/tmp/cred", "/tmp/token.json")
+		_, err = google.NewOAuthClient("/tmp/cred", "/tmp/token.json", true)
 
 		// then
 		assert.ErrorContains(t, err, "failed to retrieve token from web")
@@ -92,7 +103,7 @@ func TestNewOAuthClient(t *testing.T) {
 		// when
 		_, _ = fmt.Fprintf(w, "a")
 		_ = w.Close()
-		client, err := google.NewOAuthClient("/tmp/cred", "/tmp/token.json")
+		client, err := google.NewOAuthClient("/tmp/cred", "/tmp/token.json", true)
 
 		// then
 		assert.NoError(t, err)

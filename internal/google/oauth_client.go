@@ -16,7 +16,7 @@ type OAuthClient struct {
 }
 
 // NewOAuthClient creates new OAuthClient that can be used to create Google services.
-func NewOAuthClient(credentialsFilePath, tokenFilePath string) (*OAuthClient, error) {
+func NewOAuthClient(credentialsFilePath, tokenFilePath string, forceWeb bool) (*OAuthClient, error) {
 	b, err := os.ReadFile(credentialsFilePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "reading client secret file failed")
@@ -28,7 +28,7 @@ func NewOAuthClient(credentialsFilePath, tokenFilePath string) (*OAuthClient, er
 	}
 
 	tok, err := tokenFromFile(tokenFilePath)
-	if err != nil {
+	if err != nil && forceWeb {
 		tok, err = getTokenFromWeb(config)
 		if err != nil {
 			return nil, err
@@ -37,6 +37,8 @@ func NewOAuthClient(credentialsFilePath, tokenFilePath string) (*OAuthClient, er
 		if err != nil {
 			return nil, err
 		}
+	} else if err != nil {
+		return nil, errors.Wrapf(err, "count not get token from %s", tokenFilePath)
 	}
 
 	return &OAuthClient{HttpClient: config.Client(context.Background(), tok)}, nil

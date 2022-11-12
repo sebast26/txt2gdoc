@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	_, err := google.NewOAuthClient("credentials.json", "token.json")
+	_, err := google.NewOAuthClient("credentials.json", "token.json", true)
 	if err != nil {
 		fmt.Printf("ERROR: %s", err)
 		return
