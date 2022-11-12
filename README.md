@@ -23,4 +23,8 @@ this will create `token.json` file.
 you may select `/auth/documents` from Google Docs API. Add you email to the tests user group. For an application type you have to select `Computer`.
 4. Download and save your client credentials as `credentials.json` file.
 
-## 
+## How to run
+
+`txt2gdoc` reads stdin and creates Google Document with the content given. To execute the program please run:
+
+`cat README.md | go run github.com/sebast26/txt2gdoc/cmd/txt2gdoc`
