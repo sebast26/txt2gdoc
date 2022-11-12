@@ -12,7 +12,7 @@ import (
 )
 
 type OAuthClient struct {
-	httpClient *http.Client
+	HttpClient *http.Client
 }
 
 // NewOAuthClient creates new OAuthClient that can be used to create Google services.
@@ -39,7 +39,7 @@ func NewOAuthClient(credentialsFilePath, tokenFilePath string) (*OAuthClient, er
 		}
 	}
 
-	return &OAuthClient{httpClient: config.Client(context.Background(), tok)}, nil
+	return &OAuthClient{HttpClient: config.Client(context.Background(), tok)}, nil
 }
 
 // Retrieves a token from a local file.

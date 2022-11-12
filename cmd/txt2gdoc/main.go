@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"github.com/sebast26/txt2gdoc/internal/google"
 	"github.com/sebast26/txt2gdoc/internal/stdin"
 )
 
@@ -11,5 +11,18 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("Read from stdin: %s", string(buf))
+	client, err := google.NewOAuthClient("credentials.json", "token.json")
+	if err != nil {
+		panic(err)
+	}
+	service, err := google.NewDocumentService(client.HttpClient)
+	if err != nil {
+		panic(err)
+	}
+	doc, err := service.CreateDocument("", string(buf))
+	if err != nil {
+		panic(err)
+	}
+
+	println(doc.Location)
 }
